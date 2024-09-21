@@ -21,7 +21,7 @@ spec:
             - name: PGUSER
               value: postgres
             - name: PGHOST
-              value: postgres-cluster-ip-service
+              value: postgres-loadbalancer  # Point to PostgreSQL service
             - name: PGPORT
               value: "5432"
             - name: PGDATABASE
@@ -31,4 +31,16 @@ spec:
                 secretKeyRef:
                   name: pgpassword
                   key: PGPASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-loadbalancer
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80  # External port
+      targetPort: 5000  # Port where the server is listening
+  selector:
+    component: server
 
